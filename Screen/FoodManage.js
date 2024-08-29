@@ -9,7 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { Card } from "react-native-paper";
-import { fetchFoods, storeFood } from "../Util/Http";
+import { fetchFoods, removeFood, storeFood } from "../Util/Http";
 
 function FoodManage() {
   const [food, setFood] = useState({
@@ -18,6 +18,8 @@ function FoodManage() {
     foodPrice: 0,
   });
   const [foodList, setFoodList] = useState([]);
+  const [viewDetail, setViewDetail] = useState(false);
+  const [detailFood, setDetailFood] = useState();
   useEffect(() => {
     async function GetFetchFoods() {
       var result = await fetchFoods();
@@ -32,13 +34,25 @@ function FoodManage() {
         [inputIdentifier]: enteredValue,
       };
     });
+    console.log(food);
   }
   const handleCreateFood = () => {
     storeFood(food);
   };
-  const handleFoodClick = (foodId) => {
-    console.log("handleFoodClick");
-    console.log(foodId);
+  const handleRemoveFood = (foodId) => {
+    removeFood(foodId);
+  };
+  const handleDetailFood = (foodId) => {
+    for (var obj in foodList) {
+      if (foodList[obj].key === foodId) {
+        setDetailFood(foodList[obj]);
+      }
+    }
+
+    setViewDetail(!viewDetail);
+  };
+  const goBack = () => {
+    setViewDetail(!viewDetail);
   };
   return (
     <View>
@@ -72,25 +86,39 @@ function FoodManage() {
         </View>
       </View>
       <View style={styles.grid}>
-        <FlatList
-          data={foodList}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Card style={styles.card}>
-              <Pressable onPress={() => handleFoodClick(item.key)}>
-                <View>
-                  <Text style={styles.text}> {item.foodName} </Text>
-                  <Text style={styles.text}> {item.foodDescription} </Text>
-                  <Text style={styles.text}> {item.foodPrice} </Text>
-                </View>
-                <View>
-                  <Button title="Remove"></Button>
-                </View>
-              </Pressable>
-            </Card>
-          )}
-          numColumns={2}
-        ></FlatList>
+        {!viewDetail ? (
+          <FlatList
+            data={foodList}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+              <Card style={styles.card}>
+                <Pressable onPress={() => handleDetailFood(item.key)}>
+                  <View>
+                    <Text style={styles.text}> {item.foodName} </Text>
+                    <Text style={styles.text}> {item.foodDescription} </Text>
+                    <Text style={styles.text}> {item.foodPrice} </Text>
+                  </View>
+                  <View>
+                    <Button
+                      title="Remove"
+                      onPress={() => handleRemoveFood(item.key)}
+                    ></Button>
+                  </View>
+                </Pressable>
+              </Card>
+            )}
+            numColumns={2}
+          ></FlatList>
+        ) : (
+          <View>
+            <Text> {detailFood.foodName} </Text>
+            <Text> {detailFood.foodDescription} </Text>
+            <Text> {detailFood.foodPrice} </Text>
+          </View>
+        )}
+        <View>
+          <Button title="Go Back" onPress={goBack}></Button>
+        </View>
       </View>
     </View>
   );

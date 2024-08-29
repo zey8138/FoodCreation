@@ -20,3 +20,6 @@ export async function fetchFoods() {
   }
   return foods;
 }
+export async function removeFood(foodId) {
+  return axios.delete(Base_URL + `/foods/${foodId}.json`);
+}
