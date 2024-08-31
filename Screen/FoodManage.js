@@ -9,7 +9,7 @@ import {
   Pressable,
 } from "react-native";
 import { Card } from "react-native-paper";
-import { fetchFoods, removeFood, storeFood } from "../Util/Http";
+import { fetchFoods, removeFood, storeFood, updateFood } from "../Util/Http";
 
 function FoodManage() {
   const [food, setFood] = useState({
@@ -39,13 +39,24 @@ function FoodManage() {
   const handleCreateFood = () => {
     storeFood(food);
   };
+  const handleUpdateFood = (foodId) => {
+    const foodModel = {
+      foodId: food.key,
+      food: {
+        foodName: food.foodName,
+        foodDescription: food.foodDescription,
+        foodPrice: food.foodPrice,
+      },
+    };
+    updateFood(foodModel.foodId, foodModel.food);
+  };
   const handleRemoveFood = (foodId) => {
     removeFood(foodId);
   };
   const handleDetailFood = (foodId) => {
     for (var obj in foodList) {
       if (foodList[obj].key === foodId) {
-        setDetailFood(foodList[obj]);
+        setFood(foodList[obj]);
       }
     }
 
@@ -62,6 +73,7 @@ function FoodManage() {
             style={styles.input}
             placeholder="Food Name"
             onChangeText={(value) => inputChangeHandler("foodName", value)}
+            defaultValue={food ? food.foodName : ""}
           ></TextInput>
         </View>
         <View style={styles.inputContainer}>
@@ -71,6 +83,7 @@ function FoodManage() {
             onChangeText={(value) =>
               inputChangeHandler("foodDescription", value)
             }
+            defaultValue={food ? food.foodDescription : ""}
           ></TextInput>
         </View>
         <View style={styles.inputContainer}>
@@ -79,10 +92,15 @@ function FoodManage() {
             placeholder="Food Price"
             onChangeText={(value) => inputChangeHandler("foodPrice", value)}
             keyboardType="numeric"
+            defaultValue={food ? food.foodPrice : ""}
           ></TextInput>
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="Save" onPress={handleCreateFood}></Button>
+          {!viewDetail ? (
+            <Button title="Save" onPress={handleCreateFood}></Button>
+          ) : (
+            <Button title="Update" onPress={handleUpdateFood}></Button>
+          )}
         </View>
       </View>
       <View style={styles.grid}>
@@ -110,15 +128,17 @@ function FoodManage() {
             numColumns={2}
           ></FlatList>
         ) : (
-          <View>
-            <Text> {detailFood.foodName} </Text>
-            <Text> {detailFood.foodDescription} </Text>
-            <Text> {detailFood.foodPrice} </Text>
-          </View>
+          <Card style={styles.card}>
+            <View>
+              <Text style={styles.text}> {food.foodName} </Text>
+              <Text style={styles.text}> {food.foodDescription} </Text>
+              <Text style={styles.text}> {food.foodPrice} </Text>
+            </View>
+            <View>
+              <Button title="Go Back" onPress={goBack}></Button>
+            </View>
+          </Card>
         )}
-        <View>
-          <Button title="Go Back" onPress={goBack}></Button>
-        </View>
       </View>
     </View>
   );

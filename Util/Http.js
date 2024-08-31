@@ -23,3 +23,9 @@ export async function fetchFoods() {
 export async function removeFood(foodId) {
   return axios.delete(Base_URL + `/foods/${foodId}.json`);
 }
+export function updateFood(foodId, foodData) {
+  console.log("updateFood Inner");
+  console.log(foodId);
+  console.log(foodData);
+  return axios.put(Base_URL + `/foods/${foodId}.json`, foodData);
+}
