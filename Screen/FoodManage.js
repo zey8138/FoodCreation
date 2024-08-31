@@ -19,6 +19,7 @@ function FoodManage() {
   });
   const [foodList, setFoodList] = useState([]);
   const [viewDetail, setViewDetail] = useState(false);
+  const [renderPage, setRenderPage] = useState();
   const [detailFood, setDetailFood] = useState();
   useEffect(() => {
     async function GetFetchFoods() {
@@ -26,7 +27,7 @@ function FoodManage() {
       setFoodList(result);
     }
     GetFetchFoods();
-  }, []);
+  }, [renderPage]);
   function inputChangeHandler(inputIdentifier, enteredValue) {
     setFood((currentInputValue) => {
       return {
@@ -38,6 +39,7 @@ function FoodManage() {
   }
   const handleCreateFood = () => {
     storeFood(food);
+    setRenderPage(!renderPage);
   };
   const handleUpdateFood = (foodId) => {
     const foodModel = {
@@ -49,9 +51,12 @@ function FoodManage() {
       },
     };
     updateFood(foodModel.foodId, foodModel.food);
+    setRenderPage(!renderPage);
+    goBack();
   };
   const handleRemoveFood = (foodId) => {
     removeFood(foodId);
+    setRenderPage(!renderPage);
   };
   const handleDetailFood = (foodId) => {
     for (var obj in foodList) {
