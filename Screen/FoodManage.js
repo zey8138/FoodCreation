@@ -21,6 +21,7 @@ function FoodManage() {
   const [viewDetail, setViewDetail] = useState(false);
   const [renderPage, setRenderPage] = useState();
   const [detailFood, setDetailFood] = useState();
+
   useEffect(() => {
     async function GetFetchFoods() {
       var result = await fetchFoods();
@@ -28,6 +29,7 @@ function FoodManage() {
     }
     GetFetchFoods();
   }, [renderPage]);
+
   function inputChangeHandler(inputIdentifier, enteredValue) {
     setFood((currentInputValue) => {
       return {
@@ -37,10 +39,12 @@ function FoodManage() {
     });
     console.log(food);
   }
+
   const handleCreateFood = () => {
     storeFood(food);
     setRenderPage(!renderPage);
   };
+
   const handleUpdateFood = (foodId) => {
     const foodModel = {
       foodId: food.key,
@@ -54,10 +58,12 @@ function FoodManage() {
     setRenderPage(!renderPage);
     goBack();
   };
+
   const handleRemoveFood = (foodId) => {
     removeFood(foodId);
     setRenderPage(!renderPage);
   };
+
   const handleDetailFood = (foodId) => {
     for (var obj in foodList) {
       if (foodList[obj].key === foodId) {
@@ -67,9 +73,11 @@ function FoodManage() {
 
     setViewDetail(!viewDetail);
   };
+
   const goBack = () => {
     setViewDetail(!viewDetail);
   };
+
   return (
     <View>
       <View style={styles.container}>
@@ -148,7 +156,9 @@ function FoodManage() {
     </View>
   );
 }
+
 export default FoodManage;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
